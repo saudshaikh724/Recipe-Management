@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Recipe Form{% endblock %}
+{% block content %}
+    <h1>{% if form.title.data %}Edit{% else %}New{% endif %} Recipe</h1>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.title.label }}<br>
+            {{ form.title(size=32) }}
+        </p>
+        <p>
+            {{ form.description.label }}<br>
+            {{ form.description(rows=4, cols=40) }}
+        </p>
+        <p>
+            {{ form.ingredients.label }}<br>
+            {{ form.ingredients(rows=4, cols=40) }}
+        </p>
+        <p>
+            {{ form.instructions.label }}<br>
+            {{ form.instructions(rows=4, cols=40) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

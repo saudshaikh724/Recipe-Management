@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Recipe List{% endblock %}
+{% block content %}
+    <h1>Recipes</h1>
+    <a href="{{ url_for('new_recipe') }}">Create New Recipe</a>
+    <form action="{{ url_for('search') }}" method="GET">
+        <input type="text" name="q" placeholder="Search recipes">
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+        {% for recipe in recipes %}
+            <li>
+                <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div>
+        {% if recipes.has_prev %}
+            <a href="{{ url_for('index', page=recipes.prev_num) }}">Previous</a>
+        {% endif %}
+        {% if recipes.has_next %}
+            <a href="{{ url_for('index', page=recipes.next_num) }}">Next</a>
+        {% endif %}
+    </div>
+{% endblock %}
