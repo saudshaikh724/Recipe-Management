@@ -1,7 +1,5 @@
 # Recipe-Management
 
-# Recipe App
-
 ## Overview
 
 The Recipe Management is a web application that allows users to create, view, and manage recipes. Users can register, log in, and perform CRUD operations on recipes. The application is built using Flask, HTML,CSS and PostgreSQL.
