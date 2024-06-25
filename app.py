@@ -7,19 +7,24 @@ from config import Config
 from models import db, User, Recipe
 from forms import RecipeForm, RegistrationForm, LoginForm
 
+# Initialize the Flask application
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Initialize the database and migration
 db.init_app(app)
 migrate = Migrate(app, db)
 
+# Initialize the login manager
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+# User loader callback for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# User registration route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -32,6 +37,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
+# User login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -45,17 +51,20 @@ def login():
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', form=form)
 
+# User logout route
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# Home page route
 @app.route('/')
 def index():
     page = request.args.get('page', 1, type=int)
     recipes = Recipe.query.paginate(page=page, per_page=5)
     return render_template('index.html', recipes=recipes)
 
+# Route to create a new recipe
 @app.route('/recipe/new', methods=['GET', 'POST'])
 @login_required
 def new_recipe():
@@ -74,12 +83,14 @@ def new_recipe():
         return redirect(url_for('index'))
     return render_template('recipe_form.html', form=form)
 
+# Route to view a recipe detail
 @app.route('/recipe/<int:recipe_id>')
 @login_required
 def recipe_detail(recipe_id):
     recipe = Recipe.query.get_or_404(recipe_id)
     return render_template('recipe_detail.html', recipe=recipe)
 
+# Route to edit an existing recipe
 @app.route('/recipe/<int:recipe_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_recipe(recipe_id):
@@ -98,6 +109,7 @@ def edit_recipe(recipe_id):
         return redirect(url_for('recipe_detail', recipe_id=recipe.id))
     return render_template('recipe_form.html', form=form)
 
+# Route to delete an existing recipe
 @app.route('/recipe/<int:recipe_id>/delete', methods=['POST'])
 @login_required
 def delete_recipe(recipe_id):
@@ -110,6 +122,7 @@ def delete_recipe(recipe_id):
     flash('Recipe deleted successfully!', 'success')
     return redirect(url_for('index'))
 
+# Route to search for recipes
 @app.route('/search')
 def search():
     query = request.args.get('q')
@@ -125,5 +138,6 @@ def search():
         
     return render_template('index.html', recipes=recipes)
 
+# Run the application
 if __name__ == '__main__':
     app.run(debug=True)
